@@ -5,3 +5,4 @@ channels:
     name: メンバー名
     agency: hololive
     color: FFD700
+    subtitle_margin: 140  # 配信画面の下の帯とテロップが重なるときは大きくする

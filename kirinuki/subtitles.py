@@ -50,10 +50,12 @@ def ass_escape(text: str) -> str:
 
 
 def write_ass(cues: list[Cue], path: Path, color: str = "FFFFFF",
-              font: str = "Noto Sans CJK JP", width: int = 1920, height: int = 1080) -> None:
+              font: str = "Noto Sans JP", width: int = 1920, height: int = 1080,
+              margin_v: int = 140) -> None:
     """切り抜き向けの太字・縁取りテロップを画面下部に置くASSを書き出す。
 
     color は RRGGBB(メンバーのイメージカラーなど)。
+    margin_v は画面下からの余白。配信画面の下に帯がある場合は大きくする。
     """
     rr, gg, bb = color[0:2], color[2:4], color[4:6]
     primary = f"&H00{bb}{gg}{rr}"
@@ -65,7 +67,7 @@ WrapStyle: 0
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Default,{font},72,{primary},&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,5,2,2,60,60,60,1
+Style: Default,{font},72,{primary},&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,5,2,2,60,60,{margin_v},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

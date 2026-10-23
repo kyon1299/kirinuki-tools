@@ -91,7 +91,8 @@ def cmd_draft(args: argparse.Namespace) -> None:
             print(f"候補{n} は {cand.skip_reason} のため書き出しません")
             continue
         outdir = workdir / "drafts" / f"{n:02}"
-        render_clip(video, cues, cand, outdir, color=settings.get("color", "FFFFFF"), burn=not args.no_preview)
+        render_clip(video, cues, cand, outdir, color=settings.get("color", "FFFFFF"), burn=not args.no_preview,
+                    margin_v=args.margin or settings.get("subtitle_margin", 140))
         title = cand.title_ideas[0] if cand.title_ideas else ""
         desc = guidelines.build_description(info, rules, clip_title=title, start=cand.start)
         (outdir / "description.txt").write_text(desc, encoding="utf-8")
@@ -120,6 +121,7 @@ def main(argv: list[str] | None = None) -> None:
     d = sub.add_parser("draft", help="選んだ候補の下書きを書き出す")
     d.add_argument("workdir")
     d.add_argument("numbers", type=int, nargs="+")
+    d.add_argument("--margin", type=int, help="テロップの画面下からの余白(px、既定140)")
     d.add_argument("--no-preview", action="store_true", help="テロップ焼き込みの確認動画を作らない")
     d.set_defaults(func=cmd_draft)
 
