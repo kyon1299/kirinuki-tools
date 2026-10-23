@@ -1,0 +1,28 @@
+[project]
+name = "kirinuki-tools"
+version = "0.1.0"
+description = "VTuber配信アーカイブから切り抜きの下書きを作るツール"
+requires-python = ">=3.11"
+dependencies = [
+    "yt-dlp[default]",  # YouTubeの読み込みに使うEJSスクリプトを含む(別途Denoが必要)
+    "faster-whisper>=1.1",
+    "anthropic",
+    "pydantic>=2",
+    "pyyaml",
+    "numpy",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+# NVIDIA GPUで文字起こしするためのCUDAライブラリ(Windows向け)
+gpu = ["nvidia-cublas-cu12"]
+
+[project.scripts]
+kirinuki = "kirinuki.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["kirinuki"]
