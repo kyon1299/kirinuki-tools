@@ -14,6 +14,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest"]
+# NVIDIA GPUで文字起こしするためのCUDAライブラリ(Windows向け)
+gpu = ["nvidia-cublas-cu12"]
 
 [project.scripts]
 kirinuki = "kirinuki.cli:main"

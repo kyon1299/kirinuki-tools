@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
+import sys
 from pathlib import Path
 
 from .subtitles import Cue, write_srt
@@ -41,7 +43,22 @@ def load_audio(video: Path, sampling_rate: int = 16000):
     return np.frombuffer(out, np.int16).astype(np.float32) / 32768.0
 
 
+def _add_cuda_dll_dirs() -> None:
+    """Windowsで pip の nvidia-cublas-cu12 などに入っているDLLを読み込めるようにする。"""
+    if sys.platform != "win32":
+        return
+    for base in sys.path:
+        nvidia = Path(base) / "nvidia"
+        if not nvidia.is_dir():
+            continue
+        for bin_dir in nvidia.glob("*/bin"):
+            os.add_dll_directory(str(bin_dir))
+            os.environ["PATH"] = str(bin_dir) + os.pathsep + os.environ.get("PATH", "")
+
+
 def _run(audio, model_size: str, device: str) -> list:
+    if device != "cpu":
+        _add_cuda_dll_dirs()
     from faster_whisper import WhisperModel
 
     compute_type = "int8" if device == "cpu" else "float16"
