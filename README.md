@@ -1,0 +1,3 @@
+# kirinuki-tools
+
+VTuber切り抜きの下書き作成ツール。
