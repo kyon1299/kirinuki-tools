@@ -25,6 +25,16 @@ pip install -e ".[dev]"
 cp config/channels.example.yaml config/channels.yaml   # 対象メンバーを書く
 ```
 
+### 大きいファイルを別ドライブに置く
+
+動画は作業フォルダに、Whisperのモデル(約1.6GB)は Hugging Face のキャッシュに保存されます。
+別ドライブに置く場合は、PowerShellで一度だけ次を実行し、PowerShellを開き直してください。
+
+```powershell
+setx KIRINUKI_WORK "F:\kirinuki\work"
+setx HF_HOME "F:\kirinuki\hf-cache"
+```
+
 ## 使い方
 
 ```sh
@@ -32,7 +42,7 @@ cp config/channels.example.yaml config/channels.yaml   # 対象メンバーを�
 kirinuki analyze "https://www.youtube.com/watch?v=XXXXXXXXXXX"
 
 # 候補1と3の下書きを書き出す
-kirinuki draft work/XXXXXXXXXXX 1 3
+kirinuki draft work/XXXXXXXXXXX 1 3   # 作業フォルダを変えた場合はそのパス
 ```
 
 `work/<動画ID>/drafts/01/` に次のファイルができます。

@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import sys
 from pathlib import Path
@@ -102,7 +103,8 @@ def main(argv: list[str] | None = None) -> None:
 
     a = sub.add_parser("analyze", help="配信を取得して見どころ候補を出す")
     a.add_argument("url")
-    a.add_argument("--work", default="work", help="作業フォルダの置き場所")
+    a.add_argument("--work", default=os.environ.get("KIRINUKI_WORK", "work"),
+                   help="作業フォルダの置き場所(環境変数 KIRINUKI_WORK でも指定可)")
     a.add_argument("--top", type=int, default=8, help="候補の数")
     a.add_argument("--model", default="large-v3-turbo", help="Whisperのモデル")
     a.add_argument("--device", default="auto", choices=["auto", "cuda", "cpu"], help="文字起こしに使う装置")
