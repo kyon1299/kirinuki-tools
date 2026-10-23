@@ -5,7 +5,7 @@ import subprocess
 from pathlib import Path
 
 from .highlights import Candidate
-from .subtitles import Cue, clip_cues, write_ass, write_srt
+from .subtitles import Cue, clip_cues, read_srt, write_ass, write_srt
 
 
 def _filter_path(path: Path) -> str:
@@ -15,17 +15,22 @@ def _filter_path(path: Path) -> str:
 
 def render_clip(video: Path, cues: list[Cue], cand: Candidate, outdir: Path,
                 color: str = "FFFFFF", burn: bool = True,
-                 margin_v: int = 140) -> dict[str, Path]:
+                 margin_v: int = 140, keep_srt: bool = False) -> dict[str, Path]:
     """1候補分の下書きを outdir に書き出す。
 
     clip.mp4           カット済みの素材(テロップなし、編集ソフトに読み込む用)
     clip.srt / clip.ass テロップ(編集ソフト読み込み用 / 焼き込み用)
     preview.mp4        テロップ焼き込みの確認用(burn=True のとき)
+
+    keep_srt=True のときは、手で直した clip.srt をそのまま使って焼き込み直す。
     """
     outdir.mkdir(parents=True, exist_ok=True)
-    local = clip_cues(cues, cand.start, cand.end)
     srt, ass = outdir / "clip.srt", outdir / "clip.ass"
-    write_srt(local, srt)
+    if keep_srt and srt.exists():
+        local = read_srt(srt)
+    else:
+        local = clip_cues(cues, cand.start, cand.end)
+        write_srt(local, srt)
     write_ass(local, ass, color=color, margin_v=margin_v)
 
     clip = outdir / "clip.mp4"

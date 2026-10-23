@@ -77,3 +77,21 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         for c in cues
     ]
     path.write_text(header + "\n".join(events) + "\n", encoding="utf-8")
+
+
+def _parse_srt_time(t: str) -> float:
+    hms, ms = t.strip().split(",")
+    h, m, sec = hms.split(":")
+    return int(h) * 3600 + int(m) * 60 + int(sec) + int(ms) / 1000
+
+
+def read_srt(path: Path) -> list[Cue]:
+    """手で直した SRT を読み込む。"""
+    cues = []
+    for block in path.read_text(encoding="utf-8-sig").replace("\r\n", "\n").split("\n\n"):
+        lines = [l for l in block.strip().split("\n") if l.strip()]
+        if len(lines) < 2 or "-->" not in lines[1]:
+            continue
+        start, end = (_parse_srt_time(x) for x in lines[1].split("-->"))
+        cues.append(Cue(start, end, "\n".join(lines[2:])))
+    return cues

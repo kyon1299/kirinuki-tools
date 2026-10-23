@@ -42,7 +42,7 @@ setx HF_HOME "F:\kirinuki\hf-cache"
 # 取得 → 文字起こし → 見どころ候補
 kirinuki analyze "https://www.youtube.com/watch?v=XXXXXXXXXXX"
 
-# 候補1と3の下書きを書き出す
+# 候補1と3の下書きを書き出す(clip.srt を手で直したら --keep-srt を付けて焼き込み直す)
 kirinuki draft work/XXXXXXXXXXX 1 3   # 作業フォルダを変えた場合はそのパス
 ```
 

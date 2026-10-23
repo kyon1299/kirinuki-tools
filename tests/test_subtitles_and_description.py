@@ -28,3 +28,12 @@ def test_detect_agency_from_title():
     info = {"channel_id": "UCnone", "title": "【防災訓練】ご紹介しますのじゃ【ホロライブ/熱千めら】"}
     assert detect_agency(info) == "hololive"
     assert agency_rules(detect_agency({"title": "雑談"}))["name"].startswith("その他")
+
+
+def test_srt_roundtrip(tmp_path):
+    from kirinuki.subtitles import read_srt, write_srt
+
+    path = tmp_path / "clip.srt"
+    write_srt([Cue(0, 2.38, "あのー"), Cue(3.26, 4.94, "炎上は危険ですね")], path)
+    cues = read_srt(path)
+    assert [(c.start, c.end, c.text) for c in cues] == [(0, 2.38, "あのー"), (3.26, 4.94, "炎上は危険ですね")]
