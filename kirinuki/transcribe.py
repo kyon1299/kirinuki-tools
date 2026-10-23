@@ -46,9 +46,15 @@ def _run(audio, model_size: str, device: str) -> list:
 
     compute_type = "int8" if device == "cpu" else "float16"
     model = WhisperModel(model_size, device=device, compute_type=compute_type)
-    segments, _ = model.transcribe(audio, language="ja", vad_filter=True, word_timestamps=True)
+    segments, info = model.transcribe(audio, language="ja", vad_filter=True, word_timestamps=True)
     # transcribe は遅延評価なので、ここで最後まで回してエラーをこの関数内で出す
-    return list(segments)
+    out, last = [], -60.0
+    for seg in segments:
+        out.append(seg)
+        if seg.end - last >= 60:
+            last = seg.end
+            print(f"  文字起こし {seg.end / 60:.0f}分 / {info.duration / 60:.0f}分", flush=True)
+    return out
 
 
 def save_cues(cues: list[Cue], path: Path) -> None:
