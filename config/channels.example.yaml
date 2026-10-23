@@ -1,0 +1,7 @@
+# config/channels.yaml にコピーして使う。キーはYouTubeのチャンネルID(UC...)。
+# agency は guidelines.yaml のキー、color はテロップ色(RRGGBB、イメージカラーなど)。
+channels:
+  UCxxxxxxxxxxxxxxxxxxxxxx:
+    name: メンバー名
+    agency: hololive
+    color: FFD700

@@ -1,0 +1,30 @@
+# 事務所ごとの切り抜きガイドラインの設定。
+# 公式ガイドラインは改定されるので、投稿前に必ず最新版を読んで、ここを更新すること。
+#   requires_registration: 事前登録・申請が必要か(登録前は投稿しない)
+#   exclude_singing:       歌の区間を候補から外すか
+#   description_notes:     概要欄に入れる定型文(公式が指定する表記があればそれをそのまま書く)
+# 元配信のタイトルとURLは、どの事務所でも概要欄に自動で入る。
+agencies:
+  hololive:
+    name: ホロライブプロダクション
+    requires_registration: false
+    exclude_singing: false
+    description_notes: []
+  nijisanji:
+    name: にじさんじ
+    # 2025-05-23から切り抜きは事前登録制
+    requires_registration: true
+    exclude_singing: false
+    description_notes: []
+  vspo:
+    name: ぶいすぽっ!
+    # 事前申請制。歌枠の切り抜きは禁止
+    requires_registration: true
+    exclude_singing: true
+    description_notes: []
+  default:
+    name: その他(個人勢など)
+    # 個別にガイドラインか許可を確認するまでは安全側に倒す
+    requires_registration: true
+    exclude_singing: true
+    description_notes: []
