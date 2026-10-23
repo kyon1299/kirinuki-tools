@@ -20,6 +20,25 @@ def channel_settings(channel_id: str) -> dict:
     return load_yaml("channels.yaml").get("channels", {}).get(channel_id, {})
 
 
+AGENCY_KEYWORDS = {
+    "hololive": ("ホロライブ", "hololive"),
+    "nijisanji": ("にじさんじ", "nijisanji"),
+    "vspo": ("ぶいすぽ", "vspo"),
+}
+
+
+def detect_agency(info: dict) -> str | None:
+    """channels.yaml に設定がなければ、タイトル・概要欄・タグから事務所を推定する。"""
+    agency = channel_settings(info.get("channel_id", "")).get("agency")
+    if agency:
+        return agency
+    text = " ".join([info.get("title", ""), info.get("description", ""), " ".join(info.get("tags") or [])]).lower()
+    for name, words in AGENCY_KEYWORDS.items():
+        if any(w.lower() in text for w in words):
+            return name
+    return None
+
+
 def agency_rules(agency: str | None) -> dict:
     agencies = load_yaml("guidelines.yaml").get("agencies", {})
     return agencies.get(agency or "", agencies.get("default", {}))

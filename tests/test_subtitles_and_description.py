@@ -20,3 +20,11 @@ def test_description_has_source_title_and_url():
     assert "【雑談】はじめての配信" in desc
     assert "https://www.youtube.com/watch?v=abcdefghijk&t=125s" in desc
     assert "定型文" in desc
+
+
+def test_detect_agency_from_title():
+    from kirinuki.guidelines import agency_rules, detect_agency
+
+    info = {"channel_id": "UCnone", "title": "【防災訓練】ご紹介しますのじゃ【ホロライブ/熱千めら】"}
+    assert detect_agency(info) == "hololive"
+    assert agency_rules(detect_agency({"title": "雑談"}))["name"].startswith("その他")

@@ -34,7 +34,8 @@ def cmd_analyze(args: argparse.Namespace) -> None:
         info = fetch.fetch(args.url, workdir)
     else:
         info = fetch.load_info(workdir)
-    rules = guidelines.agency_rules(guidelines.channel_settings(info.get("channel_id", "")).get("agency"))
+    rules = guidelines.agency_rules(guidelines.detect_agency(info))
+    print(f"事務所: {rules.get('name')}")
     if rules.get("requires_registration"):
         print(f"注意: {rules.get('name')} は切り抜きの事前登録・申請が必要です。投稿前に済ませてください。")
 
@@ -76,7 +77,7 @@ def cmd_draft(args: argparse.Namespace) -> None:
     workdir = Path(args.workdir)
     info = fetch.load_info(workdir)
     settings = guidelines.channel_settings(info.get("channel_id", ""))
-    rules = guidelines.agency_rules(settings.get("agency"))
+    rules = guidelines.agency_rules(guidelines.detect_agency(info))
     cues = transcribe.load_cues(workdir / "transcript.json")
     cands = highlights.load_candidates(workdir / "candidates.json")
     video = fetch.find_video(workdir)
