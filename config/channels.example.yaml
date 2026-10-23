@@ -1,8 +1,13 @@
 # config/channels.yaml にコピーして使う。キーはYouTubeのチャンネルID(UC...)。
-# agency は guidelines.yaml のキー、color はテロップ色(RRGGBB、イメージカラーなど)。
+#   agency:          guidelines.yaml のキー(書かなければタイトルなどから推定)
+#   color:           テロップの縁取り色(RRGGBB)。メンバーのイメージカラーにする
+#   text_color:      テロップの文字色(既定は白)
+#   size:            文字の大きさ(px、既定92)
+#   font:            フォント名(既定 Noto Sans JP)。丸ゴシックにするなら「M PLUS Rounded 1c」などを入れて指定
+#   subtitle_margin: 画面下からの余白(px)。配信画面の下の帯とテロップが重なるときは大きくする
 channels:
   UCxxxxxxxxxxxxxxxxxxxxxx:
     name: メンバー名
     agency: hololive
-    color: FFD700
-    subtitle_margin: 140  # 配信画面の下の帯とテロップが重なるときは大きくする
+    color: FF6FA8
+    subtitle_margin: 140

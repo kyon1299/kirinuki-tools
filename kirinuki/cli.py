@@ -91,8 +91,12 @@ def cmd_draft(args: argparse.Namespace) -> None:
             print(f"候補{n} は {cand.skip_reason} のため書き出しません")
             continue
         outdir = workdir / "drafts" / f"{n:02}"
-        render_clip(video, cues, cand, outdir, color=settings.get("color", "FFFFFF"), burn=not args.no_preview,
-                    margin_v=args.margin or settings.get("subtitle_margin", 140), keep_srt=args.keep_srt)
+        style = {k: settings[k] for k in ("font", "size", "text_color") if k in settings}
+        if args.size:
+            style["size"] = args.size
+        render_clip(video, cues, cand, outdir, color=args.color or settings.get("color", "FF6FA8"),
+                    burn=not args.no_preview, margin_v=args.margin or settings.get("subtitle_margin", 140),
+                    keep_srt=args.keep_srt, style=style)
         title = cand.title_ideas[0] if cand.title_ideas else ""
         desc = guidelines.build_description(info, rules, clip_title=title, start=cand.start)
         (outdir / "description.txt").write_text(desc, encoding="utf-8")
@@ -122,6 +126,8 @@ def main(argv: list[str] | None = None) -> None:
     d.add_argument("workdir")
     d.add_argument("numbers", type=int, nargs="+")
     d.add_argument("--margin", type=int, help="テロップの画面下からの余白(px、既定140)")
+    d.add_argument("--color", help="縁取りの色(RRGGBB、メンバーのイメージカラー)")
+    d.add_argument("--size", type=int, help="テロップの文字の大きさ(px、既定92)")
     d.add_argument("--keep-srt", action="store_true", help="手で直した clip.srt を使って焼き込み直す")
     d.add_argument("--no-preview", action="store_true", help="テロップ焼き込みの確認動画を作らない")
     d.set_defaults(func=cmd_draft)

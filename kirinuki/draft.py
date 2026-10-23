@@ -14,8 +14,8 @@ def _filter_path(path: Path) -> str:
 
 
 def render_clip(video: Path, cues: list[Cue], cand: Candidate, outdir: Path,
-                color: str = "FFFFFF", burn: bool = True,
-                 margin_v: int = 140, keep_srt: bool = False) -> dict[str, Path]:
+                color: str = "FF6FA8", burn: bool = True, margin_v: int = 140,
+                keep_srt: bool = False, style: dict | None = None) -> dict[str, Path]:
     """1候補分の下書きを outdir に書き出す。
 
     clip.mp4           カット済みの素材(テロップなし、編集ソフトに読み込む用)
@@ -31,7 +31,7 @@ def render_clip(video: Path, cues: list[Cue], cand: Candidate, outdir: Path,
     else:
         local = clip_cues(cues, cand.start, cand.end)
         write_srt(local, srt)
-    write_ass(local, ass, color=color, margin_v=margin_v)
+    write_ass(local, ass, color=color, margin_v=margin_v, **(style or {}))
 
     clip = outdir / "clip.mp4"
     duration = cand.end - cand.start

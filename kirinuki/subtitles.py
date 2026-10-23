@@ -49,16 +49,28 @@ def ass_escape(text: str) -> str:
     return text.replace("\\", "\\\\").replace("{", "\\{").replace("}", "\\}").replace("\n", "\\N")
 
 
-def write_ass(cues: list[Cue], path: Path, color: str = "FFFFFF",
-              font: str = "Noto Sans JP", width: int = 1920, height: int = 1080,
-              margin_v: int = 140) -> None:
-    """切り抜き向けの太字・縁取りテロップを画面下部に置くASSを書き出す。
+def _ass_color(rgb: str, alpha: str = "00") -> str:
+    """RRGGBB を ASS の &HAABBGGRR に変換する。"""
+    return f"&H{alpha}{rgb[4:6]}{rgb[2:4]}{rgb[0:2]}".upper()
 
-    color は RRGGBB(メンバーのイメージカラーなど)。
+
+def _darken(rgb: str, factor: float = 0.45) -> str:
+    return "".join(f"{int(int(rgb[i:i + 2], 16) * factor):02X}" for i in (0, 2, 4))
+
+
+def write_ass(cues: list[Cue], path: Path, color: str = "FF6FA8",
+              font: str = "Noto Sans JP", width: int = 1920, height: int = 1080,
+              margin_v: int = 140, size: int = 92, text_color: str = "FFFFFF") -> None:
+    """切り抜き向けのテロップを画面下部に置くASSを書き出す。
+
+    白文字をメンバーのイメージカラーで縁取り、その外側を白で囲む二重縁にする。
+    color はイメージカラー(RRGGBB)、text_color は文字色、size は文字の大きさ(px)。
     margin_v は画面下からの余白。配信画面の下に帯がある場合は大きくする。
     """
-    rr, gg, bb = color[0:2], color[2:4], color[4:6]
-    primary = f"&H00{bb}{gg}{rr}"
+    text = _ass_color(text_color)
+    accent = _ass_color(color)
+    shadow = _ass_color(_darken(color), "60")
+    common = f"-1,0,0,0,100,100,2,0,1"
     header = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {width}
@@ -67,15 +79,17 @@ WrapStyle: 0
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Default,{font},72,{primary},&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,5,2,2,60,60,{margin_v},1
+Style: Outer,{font},{size},&H00FFFFFF,&H000000FF,&H00FFFFFF,{shadow},{common},14,4,2,60,60,{margin_v},1
+Style: Default,{font},{size},{text},&H000000FF,{accent},&H00000000,{common},5,0,2,60,60,{margin_v},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
-    events = [
-        f"Dialogue: 0,{ass_time(c.start)},{ass_time(c.end)},Default,,0,0,0,,{ass_escape(c.text)}"
-        for c in cues
-    ]
+    events = []
+    for c in cues:
+        t0, t1, body = ass_time(c.start), ass_time(c.end), ass_escape(c.text)
+        events.append(f"Dialogue: 0,{t0},{t1},Outer,,0,0,0,,{body}")
+        events.append(f"Dialogue: 1,{t0},{t1},Default,,0,0,0,,{body}")
     path.write_text(header + "\n".join(events) + "\n", encoding="utf-8")
 
 
