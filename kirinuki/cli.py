@@ -24,7 +24,12 @@ def cmd_analyze(args: argparse.Namespace) -> None:
     workdir = Path(args.work) / _video_id(args.url)
     print(f"作業フォルダ: {workdir}")
 
-    if not (workdir / "video.info.json").exists():
+    try:
+        fetch.find_video(workdir)
+        downloaded = (workdir / "video.info.json").exists()
+    except FileNotFoundError:
+        downloaded = False
+    if not downloaded:
         print("1/4 動画とチャットを取得中…")
         info = fetch.fetch(args.url, workdir)
     else:

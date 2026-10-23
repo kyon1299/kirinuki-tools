@@ -15,6 +15,7 @@ VTuberの配信アーカイブから、切り抜き動画の「下書き」を�
 ## 準備
 
 - Python 3.11 以上、ffmpeg
+- Deno(yt-dlpがYouTubeを読み込むのに使います。Windowsは `winget install DenoLand.Deno`)
 - NVIDIA GPU があると文字起こしが速いです(なくても動きます)
 - Claude API キー(`ANTHROPIC_API_KEY`)。なくても `--no-llm` で使えます
 

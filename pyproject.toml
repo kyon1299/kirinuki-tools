@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "VTuber配信アーカイブから切り抜きの下書きを作るツール"
 requires-python = ">=3.11"
 dependencies = [
-    "yt-dlp",
+    "yt-dlp[default]",  # YouTubeの読み込みに使うEJSスクリプトを含む(別途Denoが必要)
     "faster-whisper>=1.1",
     "anthropic",
     "pydantic>=2",
