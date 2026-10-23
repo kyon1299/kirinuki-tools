@@ -82,7 +82,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 def _parse_srt_time(t: str) -> float:
     hms, ms = t.strip().split(",")
     h, m, sec = hms.split(":")
-    return int(h) * 3600 + int(m) * 60 + int(sec) + int(ms) / 1000
+    return ((int(h) * 3600 + int(m) * 60 + int(sec)) * 1000 + int(ms)) / 1000
 
 
 def read_srt(path: Path) -> list[Cue]:
