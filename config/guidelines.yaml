@@ -7,6 +7,9 @@
 agencies:
   hololive:
     name: ホロライブプロダクション
+    # 切り抜きチャンネルの登録は義務ではなく「お願い」(登録すると削除手続きの前に連絡が来る)
+    # 登録フォームは https://hololivepro.com/terms/ の二次創作ガイドラインから
+    # 概要欄の冒頭に元動画のURLとタイトルが必要。メンバーシップ限定など有料コンテンツは切り抜き禁止
     requires_registration: false
     exclude_singing: false
     description_notes: []

@@ -37,3 +37,9 @@ def test_srt_roundtrip(tmp_path):
     write_srt([Cue(0, 2.38, "あのー"), Cue(3.26, 4.94, "炎上は危険ですね")], path)
     cues = read_srt(path)
     assert [(c.start, c.end, c.text) for c in cues] == [(0, 2.38, "あのー"), (3.26, 4.94, "炎上は危険ですね")]
+
+
+def test_description_starts_with_source():
+    info = {"title": "元配信", "webpage_url": "https://www.youtube.com/watch?v=abcdefghijk"}
+    desc = build_description(info, {}, clip_title="切り抜きタイトル")
+    assert desc.startswith("▼元配信\n元配信\nhttps://www.youtube.com/watch?v=abcdefghijk")
