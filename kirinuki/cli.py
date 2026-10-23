@@ -44,7 +44,9 @@ def cmd_analyze(args: argparse.Namespace) -> None:
         cues = transcribe.load_cues(transcript)
     else:
         print("2/4 文字起こし中…(GPUなしだと時間がかかります)")
-        cues = transcribe.transcribe(fetch.find_video(workdir), workdir, model_size=args.model, device=args.device)
+        vocabulary = guidelines.channel_settings(info.get("channel_id", "")).get("vocabulary")
+        cues = transcribe.transcribe(fetch.find_video(workdir), workdir, model_size=args.model,
+                                     device=args.device, vocabulary=vocabulary)
 
     print("3/4 チャットの盛り上がりを集計中…")
     chat_file = workdir / "video.live_chat.json"

@@ -11,17 +11,21 @@ from .subtitles import Cue, write_srt
 
 
 def transcribe(video: Path, workdir: Path, model_size: str = "large-v3-turbo",
-               device: str = "auto") -> list[Cue]:
-    """文字起こしして transcript.json と transcript.srt を書き出す。"""
+               device: str = "auto", vocabulary: list[str] | None = None) -> list[Cue]:
+    """文字起こしして transcript.json と transcript.srt を書き出す。
+
+    vocabulary はメンバーの一人称・口癖・固有名詞など。Whisperに手がかりとして渡し、
+    「わし」が「和紙」になるような聞き間違いを減らす。
+    """
     audio = load_audio(video)
     try:
-        segments = _run(audio, model_size, device)
+        segments = _run(audio, model_size, device, vocabulary)
     except (RuntimeError, ValueError, OSError) as e:
         if device == "cpu":
             raise
         # CUDAのライブラリ(cuBLAS / cuDNN)がない環境では、文字起こしの途中で落ちるのでCPUでやり直す
         print(f"GPUで文字起こしできなかったため、CPUで実行します({e})")
-        segments = _run(audio, model_size, "cpu")
+        segments = _run(audio, model_size, "cpu", vocabulary)
     cues = [Cue(start=s.start, end=s.end, text=s.text.strip()) for s in segments if s.text.strip()]
     save_cues(cues, workdir / "transcript.json")
     write_srt(cues, workdir / "transcript.srt")
@@ -56,14 +60,18 @@ def _add_cuda_dll_dirs() -> None:
             os.environ["PATH"] = str(bin_dir) + os.pathsep + os.environ.get("PATH", "")
 
 
-def _run(audio, model_size: str, device: str) -> list:
+def _run(audio, model_size: str, device: str, vocabulary: list[str] | None = None) -> list:
     if device != "cpu":
         _add_cuda_dll_dirs()
     from faster_whisper import WhisperModel
 
     compute_type = "int8" if device == "cpu" else "float16"
     model = WhisperModel(model_size, device=device, compute_type=compute_type)
-    segments, info = model.transcribe(audio, language="ja", vad_filter=True, word_timestamps=True)
+    words = " ".join(vocabulary or [])
+    segments, info = model.transcribe(
+        audio, language="ja", vad_filter=True, word_timestamps=True,
+        initial_prompt=words or None, hotwords=words or None,
+    )
     # transcribe は遅延評価なので、ここで最後まで回してエラーをこの関数内で出す
     out, last = [], -60.0
     for seg in segments:

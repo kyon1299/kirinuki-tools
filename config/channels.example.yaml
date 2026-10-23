@@ -5,6 +5,7 @@
 #   size:            文字の大きさ(px、既定92)
 #   font:            フォント名(既定 BIZ UDPGothic、Windows標準)。別のフォントは Bold の固定ウェイト版を入れて指定する
 #                    (可変フォント版 *-VF.ttf は ffmpeg が太字を選べず、極細で描かれる)
+#   vocabulary:      一人称・口癖・固有名詞など、文字起こしで聞き間違えやすい言葉のリスト
 #   subtitle_margin: 画面下からの余白(px)。配信画面の下の帯とテロップが重なるときは大きくする
 channels:
   UCxxxxxxxxxxxxxxxxxxxxxx:
@@ -12,3 +13,4 @@ channels:
     agency: hololive
     color: FF6FA8
     subtitle_margin: 140
+    vocabulary: [わし, のじゃ]
