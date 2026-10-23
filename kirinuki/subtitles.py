@@ -59,7 +59,7 @@ def _darken(rgb: str, factor: float = 0.45) -> str:
 
 
 def write_ass(cues: list[Cue], path: Path, color: str = "FF6FA8",
-              font: str = "Noto Sans JP", width: int = 1920, height: int = 1080,
+              font: str = "BIZ UDPGothic", width: int = 1920, height: int = 1080,
               margin_v: int = 140, size: int = 92, text_color: str = "FFFFFF") -> None:
     """切り抜き向けのテロップを画面下部に置くASSを書き出す。
 

@@ -3,7 +3,8 @@
 #   color:           テロップの縁取り色(RRGGBB)。メンバーのイメージカラーにする
 #   text_color:      テロップの文字色(既定は白)
 #   size:            文字の大きさ(px、既定92)
-#   font:            フォント名(既定 Noto Sans JP)。丸ゴシックにするなら「M PLUS Rounded 1c」などを入れて指定
+#   font:            フォント名(既定 BIZ UDPGothic、Windows標準)。別のフォントは Bold の固定ウェイト版を入れて指定する
+#                    (可変フォント版 *-VF.ttf は ffmpeg が太字を選べず、極細で描かれる)
 #   subtitle_margin: 画面下からの余白(px)。配信画面の下の帯とテロップが重なるときは大きくする
 channels:
   UCxxxxxxxxxxxxxxxxxxxxxx:
