@@ -37,7 +37,7 @@ def cmd_analyze(args: argparse.Namespace) -> None:
         cues = transcribe.load_cues(transcript)
     else:
         print("2/4 文字起こし中…(GPUなしだと時間がかかります)")
-        cues = transcribe.transcribe(fetch.find_video(workdir), workdir, model_size=args.model)
+        cues = transcribe.transcribe(fetch.find_video(workdir), workdir, model_size=args.model, device=args.device)
 
     print("3/4 チャットの盛り上がりを集計中…")
     chat_file = workdir / "video.live_chat.json"
@@ -105,6 +105,7 @@ def main(argv: list[str] | None = None) -> None:
     a.add_argument("--work", default="work", help="作業フォルダの置き場所")
     a.add_argument("--top", type=int, default=8, help="候補の数")
     a.add_argument("--model", default="large-v3-turbo", help="Whisperのモデル")
+    a.add_argument("--device", default="auto", choices=["auto", "cuda", "cpu"], help="文字起こしに使う装置")
     a.add_argument("--no-llm", action="store_true", help="Claudeでの絞り込みをしない")
     a.set_defaults(func=cmd_analyze)
 
