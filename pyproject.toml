@@ -9,6 +9,7 @@ dependencies = [
     "anthropic",
     "pydantic>=2",
     "pyyaml",
+    "numpy",
 ]
 
 [project.optional-dependencies]
